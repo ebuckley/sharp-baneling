@@ -3,18 +3,40 @@
 <head>
 	<title></title>
 	<script type="text/javascript" src='/socket.io/socket.io.js'></script>
-	<script type="text/javascript" src='/js/angular.js'></script>
-	<script type="text/javascript" src='/js/underscore.js'></script>
+	<script type="text/javascript" src='//cdnjs.cloudflare.com/ajax/libs/mousetrap/1.4.6/mousetrap.min.js'></script>
+	<script type="text/javascript" src='//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.9/angular.min.js'></script>
+	<script type="text/javascript" src='//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js'></script>
 	<script type="text/javascript" src='/js/application.js'></script>
-	<link rel="stylesheet" type="text/css" href="/css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.0.0/animate.min.css">
+	<link rel="stylesheet" type="text/css" href="/css/style.css">
+	<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
 </head>
 <body ng-controller='PageCtrl'>
-	<h1>{{msg}}</h1>
-	<div>
-		You and {{activeUsers}} are enjoying this page
-	</div>
-	<div>
-		<input type="text" ng-model='message'>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table">
+					<tr ng-repeat="msg in chat.msgs" >
+						<td>
+							{{msg.content}}
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="col-md-12">
+				<div class="form-inline">
+					<form class="form-group col-md-10 col-sm-10 col-lg-10" ng-submit='broadcast(chat)'>
+						<input type="text" ng-model='chat.message' class="form-control" placeholder="Type Something!">
+					</div>
+					<div class="form-group col-md-2 col-sm-2 col-lg-2">
+						<button class="btn btn-primary form-control">Send</button>
+					</form>
+				</div>
+				<div>
+				You and {{activeUsers}} others are enjoying this chat
+				</div>	
+			</div>
+		</div>
 	</div>
 </body>
 </html>
