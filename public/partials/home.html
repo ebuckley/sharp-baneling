@@ -1,0 +1,13 @@
+<div class="container">
+	<div ng-show='user'>
+		<h1>{{user.id}}-{{user.name}}</h1>
+	</div>
+	<form class="form-inline" ng-submit='join(usernameInput)' ng-show='!user'>
+		<div class='form-group'>
+			<input class='form-control' ng-model='usernameInput'></input>
+		</div>
+		<div class="form-group">
+			<button class='btn btn-danger'>Join!</button>
+		</div>
+	</form>
+</div>

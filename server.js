@@ -13,24 +13,31 @@ app.get('/', function(req, res) {
 server.listen(process.env.PORT || 3030);
 
 
-var activeUsers = 0
+var userId = 0
 var messages = 0;
+var users = [];
 io.sockets.on('connection', function (socket) {
 
-	activeUsers ++;
-	io.sockets.emit('users', {count: activeUsers});
 
 	// onners
 	socket.on('msg:send', function (msg) {
 		messages ++;
 		//send the new message to all users
 		io.sockets.emit('msg:recieve', {
-			id: messages,
-			content: msg
+			user: msg.user,
+			msg: msg.msg
 		});
 	});
+	socket.on('user:register', function (user) {
+		var newUser = {name:user, id: ++userId}
+		users.push(newUser);
+		socket.emit('connected', {
+			user: newUser,
+			users: users
+		});
+		io.sockets.emit('users', {count: users.length, users: users});
+	})
 	socket.on('disconnect', function () {
-		activeUsers --;
-		io.sockets.emit('users', {count: activeUsers});
+		io.sockets.emit('users', {count: users.length, users: users});
 	});
 });
