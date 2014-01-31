@@ -1,7 +1,8 @@
 var express = require('express')
 	app = express(),
 	server = require('http').createServer(app),
-	io = require('socket.io').listen(server);
+	io = require('socket.io').listen(server),
+	hub = require('hubjs')();
 
 console.log("app started on port 3030")
 
@@ -18,7 +19,7 @@ var messages = 0;
 var users = [];
 io.sockets.on('connection', function (socket) {
 
-
+	hub.emit('newConnection');
 	// onners
 	socket.on('msg:send', function (msg) {
 		messages ++;
@@ -40,4 +41,8 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function () {
 		io.sockets.emit('users', {count: users.length, users: users});
 	});
+});
+
+hub.on('newConnection', function() {
+	console.log('new connection made');
 });
