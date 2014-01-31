@@ -13,36 +13,45 @@ app.get('/', function(req, res) {
 
 server.listen(process.env.PORT || 3030);
 
-
 var userId = 0
 var messages = 0;
 var users = [];
 io.sockets.on('connection', function (socket) {
+	hub.emit('newConnection', socket);
+});
 
-	hub.emit('newConnection');
-	// onners
+hub.on('newConnection', function(socket) {
+	console.log('new connection made');
 	socket.on('msg:send', function (msg) {
-		messages ++;
-		//send the new message to all users
-		io.sockets.emit('msg:recieve', {
-			user: msg.user,
-			msg: msg.msg
-		});
+		hub.emit('msg.send', msg);
 	});
 	socket.on('user:register', function (user) {
-		var newUser = {name:user, id: ++userId}
-		users.push(newUser);
-		socket.emit('connected', {
-			user: newUser,
-			users: users
-		});
-		io.sockets.emit('users', {count: users.length, users: users});
+		hub.emit('user.register', {socket: socket, user: user});
 	})
 	socket.on('disconnect', function () {
-		io.sockets.emit('users', {count: users.length, users: users});
+		hub.emit('disconnect');
 	});
 });
 
-hub.on('newConnection', function() {
-	console.log('new connection made');
+hub.on('msg.send', function (message) {
+	messages ++;
+	//send the new message to all users
+	io.sockets.emit('msg:recieve', {
+		user: message.user,
+		msg: message.msg
+	});
+});
+
+hub.on('user.register', function (connection) {
+	var newUser = {name:connection.user, id: ++userId}
+	users.push(newUser);
+	connection.socket.emit('connected', {
+		user: newUser,
+		users: users
+	});
+	io.sockets.emit('users', {count: users.length, users: users});
+});
+
+hub.on('disconnect', function () {
+	io.sockets.emit('users', {count: users.length, users: users});
 });
