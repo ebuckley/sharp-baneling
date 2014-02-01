@@ -55,3 +55,21 @@ hub.on('user.register', function (connection) {
 hub.on('disconnect', function () {
 	io.sockets.emit('users', {count: users.length, users: users});
 });
+
+var connectionCount = 0;
+hub.on('newConnection', function() {
+	connectionCount++;
+	console.log('total number of connections: ' + connectionCount);
+});
+
+var registerCount = 0;
+hub.on('user.register', function() {
+	registerCount++;
+	console.log('total number of registrants: ' + registerCount);
+});
+
+var messageCount = 0;
+hub.on('msg.send', function () {
+	messageCount++;
+	console.log('total number of messages: ' + messageCount);
+});
